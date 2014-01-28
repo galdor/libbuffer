@@ -11,6 +11,12 @@
 more information. `libhashtable` is free software as defined by the
 OSI ^[Open Source Initiative: <http://opensource.org>].
 
+# Thread safety
+
+Using a buffer from multiple threads simultaneously is not safe. It is however
+safe to use differents buffers in multiple threads. The error string returned
+by `bf_get_error` is local to each thread.
+
 # Interface
 
 The name of all symbols exported by the library is prefixed by `bf_`.
@@ -60,3 +66,110 @@ If `allocator` is null, the default memory allocator
 ~~~
 
 A pointer to the default memory allocator used by the library.
+
+## `bf_buffer_new`
+~~~ {.c}
+    struct bf_buffer *bf_buffer_new(size_t initial_size);
+~~~~
+
+Create and return a new buffer. If `initial_size` is greater than 0, the
+buffer is initialized with a size of `initial_size` bytes. If it is lower or
+equal to 0, the buffer is left uninitialized.
+
+## `bf_buffer_delete`
+~~~ {.c}
+    void bf_buffer_delete(struct bf_buffer *buf);
+~~~
+
+Free `buf` and all data associated to it. If `buf` is null or if the buffer is
+not initialized, no action is performed.
+
+## `bf_buffer_data`
+~~~ {.c}
+    char *bf_buffer_data(const struct bf_buffer *buf);
+~~~
+
+Return a pointer to the data stored in `buf`. If `buf` is not initialized,
+`bf_buffer_data` returns `NULL`.
+
+## `bf_buffer_length`
+~~~ {.c}
+    size_t bf_buffer_length(const struct bf_buffer *buf);
+~~~
+
+Return the length of `buf`, i.e. the number of bytes stored inside it.
+
+## `bf_buffer_clear`
+~~~ {.c}
+    void bf_buffer_clear(struct bf_buffer *buf);
+~~~
+
+Clear all data stored in `buf`. Note that this function does not actually
+erase any thing, and has a complexity of `Ο(1)`.
+
+## `bf_buffer_insert`
+~~~ {.c}
+    int bf_buffer_insert(struct bf_buffer *buf, size_t offset, const char *data,
+                         size_t sz);
+~~~
+
+Copy `sz` bytes referenced by `data` at the offset `offset` of `buf`. If
+`offset` is equal to the length of `buf`, data are copied to the end of `buf`.
+If not, the content of `buf` after `offset` is moved to make place for new
+data.
+
+If a memory allocation function fails, `bf_buffer_insert` returns -1. If not,
+it returns 0.
+
+## `bf_buffer_add`
+~~~ {.c}
+    int bf_buffer_add(struct bf_buffer *buf, const char *data, size_t sz);
+~~~
+
+Copy `sz` bytes referenced by `data` to the end of `buf`.
+
+If a memory allocation function fails, `bf_buffer_add` returns -1. If not,
+it returns 0.
+
+## `bf_buffer_add_buffer`
+~~~ {.c}
+    int bf_buffer_add_buffer(struct bf_buffer *buf, const struct bf_buffer *src);
+~~~
+
+Copy the content of the `src` buffer to `buf`.
+
+If a memory allocation function fails, `bf_buffer_add_buffer` returns -1.
+If not, it returns 0.
+
+## `bf_buffer_add_string`
+~~~ {.c}
+    int bf_buffer_add_string(struct bf_buffer *buf, const char *str);
+~~~
+
+Copy the null-terminated string `str` to `buf`. Note that the final `\0`
+byte is not copied.
+
+If a memory allocation function fails, `bf_buffer_add_string` returns -1.
+If not, it returns 0.
+
+## `bf_buffer_add_vprintf`
+~~~ {.c}
+    int bf_buffer_add_vprintf(struct bf_buffer *buf, const char *fmt, va_list ap);
+~~~
+
+Add formatted data defined by the format string `fmt` and the `va_list`
+variable `ap` to `buf`. Note that no final '\0' is added.
+
+If formatting or memory allocation fails, `bf_buffer_add_printf` returns -1.
+If not, it returns 0.
+
+## `bf_buffer_add_printf`
+~~~ {.c}
+    int bf_buffer_add_printf(struct bf_buffer *buf, const char *fmt, ...)
+~~~
+
+Add formatted data defined by the format string `fmt` to `buf`. Note that no
+final '\0' is added.
+
+If formatting or memory allocation fails, `bf_buffer_add_printf` returns -1.
+If not, it returns 0.

@@ -17,6 +17,9 @@
 #ifndef LIBBUFFER_BUFFER_H
 #define LIBBUFFER_BUFFER_H
 
+#include <stdarg.h>
+#include <stdlib.h>
+
 struct bf_memory_allocator {
    void *(*malloc)(size_t sz);
    void (*free)(void *ptr);
@@ -30,5 +33,22 @@ extern struct bf_memory_allocator *bf_default_memory_allocator;
 const char *bf_get_error(void);
 
 void bf_set_memory_allocator(const struct bf_memory_allocator *allocator);
+
+
+struct bf_buffer *bf_buffer_new(size_t initial_size);
+void bf_buffer_delete(struct bf_buffer *buf);
+
+char *bf_buffer_data(const struct bf_buffer *buf);
+size_t bf_buffer_length(const struct bf_buffer *buf);
+void bf_buffer_clear(struct bf_buffer *buf);
+
+int bf_buffer_insert(struct bf_buffer *buf, size_t offset, const char *data,
+                     size_t sz);
+int bf_buffer_add(struct bf_buffer *buf, const char *data, size_t sz);
+int bf_buffer_add_buffer(struct bf_buffer *buf, const struct bf_buffer *src);
+int bf_buffer_add_string(struct bf_buffer *buf, const char *str);
+int bf_buffer_add_vprintf(struct bf_buffer *buf, const char *fmt, va_list ap);
+int bf_buffer_add_printf(struct bf_buffer *buf, const char *fmt, ...)
+    __attribute__((format(printf, 2, 3)));
 
 #endif

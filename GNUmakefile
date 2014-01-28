@@ -17,7 +17,7 @@ PANDOC_OPTS= -s --toc --email-obfuscation=none
 platform= $(shell uname -s)
 
 ifeq ($(platform), Linux)
-	CFLAGS+= -DBUF_PLATFORM_LINUX
+	CFLAGS+= -DBF_PLATFORM_LINUX
 	CFLAGS+= -D_POSIX_C_SOURCE=200809L -D_BSD_SOURCE
 endif
 

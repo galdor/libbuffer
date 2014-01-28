@@ -78,7 +78,15 @@ bf_set_memory_allocator(const struct bf_memory_allocator *allocator) {
 
 void *
 bf_malloc(size_t sz) {
-    return bf_allocator.malloc(sz);
+    void *ptr;
+
+    ptr = bf_allocator.malloc(sz);
+    if (!ptr) {
+        bf_set_error("cannot allocate %zu bytes: %m", sz);
+        return NULL;
+    }
+
+    return ptr;
 }
 
 void
@@ -88,10 +96,26 @@ bf_free(void *ptr) {
 
 void *
 bf_calloc(size_t nb, size_t sz) {
-    return bf_allocator.calloc(nb, sz);
+    void *ptr;
+
+    ptr = bf_allocator.calloc(nb, sz);
+    if (!ptr) {
+        bf_set_error("cannot allocate %zux%zu bytes: %m", nb, sz);
+        return NULL;
+    }
+
+    return ptr;
 }
 
 void *
 bf_realloc(void *ptr, size_t sz) {
-    return bf_allocator.realloc(ptr, sz);
+    void *nptr;
+
+    nptr = bf_allocator.realloc(ptr, sz);
+    if (!nptr) {
+        bf_set_error("cannot reallocate %zu bytes: %m", sz);
+        return NULL;
+    }
+
+    return nptr;
 }

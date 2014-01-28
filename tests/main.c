@@ -53,8 +53,54 @@ static void usage(const char *, int);
     }
 
 
-TEST_DEFINE(append) {
-    TEST_ASSERT(0 == 0, "TODO");
+TEST_DEFINE(initialization) {
+    struct bf_buffer *buf;
+
+    buf = bf_buffer_new(0);
+    TEST_ASSERT(bf_buffer_length(buf) == 0,
+                "a buffer with an initial size of 0 is empty");
+    TEST_ASSERT(bf_buffer_data(buf) == NULL,
+                "a buffer with an initial size of 0 does not contain any data");
+    bf_buffer_delete(buf);
+
+    buf = bf_buffer_new(32);
+    TEST_ASSERT(bf_buffer_length(buf) == 0,
+                "a buffer with an initial size of 32 is empty");
+    TEST_ASSERT(bf_buffer_data(buf) != NULL,
+                "a buffer with an initial size of 0 contain data");
+    bf_buffer_delete(buf);
+
+    TEST_SUCCEED();
+}
+
+TEST_DEFINE(add) {
+    struct bf_buffer *buf;
+
+    buf = bf_buffer_new(0);
+
+    bf_buffer_add_string(buf, "abc");
+    TEST_ASSERT(bf_buffer_length(buf) == 3,
+                "the length is right after adding data for the first time");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "abc", 3) == 0,
+                "data are correct after adding data for the first time");
+
+    bf_buffer_add_string(buf, "defgh");
+    TEST_ASSERT(bf_buffer_length(buf) == 8,
+                "the length is right after adding data for the second time");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "abcdefgh", 8) == 0,
+                "data are correct after adding data for the second time");
+
+    bf_buffer_clear(buf);
+    TEST_ASSERT(bf_buffer_length(buf) == 0,
+                "the length is right after clearing the buffer");
+
+    bf_buffer_add_printf(buf, "%d", 42);
+    TEST_ASSERT(bf_buffer_length(buf) == 2,
+                "the length is right after adding formatted data");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "42", 2) == 0,
+                "data are correct after adding formatted data");
+
+    bf_buffer_delete(buf);
 
     TEST_SUCCEED();
 }
@@ -66,7 +112,8 @@ static struct {
     const char *name;
     int (*test_func)();
 } test_cases[] = {
-    TEST_CASE(append),
+    TEST_CASE(initialization),
+    TEST_CASE(add),
 };
 
 #undef TEST_CASE
