@@ -1,0 +1,62 @@
+% libbuffer
+% Nicolas Martyanoff
+
+# Introduction
+
+**TODO**
+
+# License
+
+`libbuffer` is released under the ISC license. See the `LICENSE` file for
+more information. `libhashtable` is free software as defined by the
+OSI ^[Open Source Initiative: <http://opensource.org>].
+
+# Interface
+
+The name of all symbols exported by the library is prefixed by `bf_`.
+
+## `bf_get_error`
+
+~~~ {.c}
+    const char *bf_get_error(void);
+~~~
+
+Return the current error string. If there is no current error string, an empty
+string is returned. The character string referenced by the returned pointer
+can be modified by any function of the library.
+
+When a function of the library fails, an error string is set.
+
+## `bf_memory_allocator`
+
+~~~ {.c}
+    struct bf_memory_allocator {
+        void *(*malloc)(size_t sz);
+        void (*free)(void *ptr);
+        void *(*calloc)(size_t nb, size_t sz);
+        void *(*realloc)(void *ptr, size_t sz);
+    };
+~~~
+
+This structure contains the functions used for memory allocation in the
+library.
+
+## `bf_set_memory_allocator`
+~~~ {.c}
+     void bf_set_memory_allocator(const struct bf_memory_allocator *allocator);
+~~~
+
+Set the memory allocator used by all functions in the library. The library
+assumes that if the `malloc`, `calloc` or `realloc` functions return NULL,
+then allocation has failed and the value of `errno` indicates the cause of the
+failure.
+
+If `allocator` is null, the default memory allocator
+(`bf_default_memory_allocator`) is used.
+
+## `bf_default_memory_allocator`
+~~~ {.c}
+    struct bf_memory_allocator *bf_default_memory_allocator;
+~~~
+
+A pointer to the default memory allocator used by the library.

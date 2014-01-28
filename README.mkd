@@ -1,0 +1,13 @@
+# libbuffer
+
+## Description
+
+`libbuffer` is a small C library providing a general purpose buffer structure.
+
+More information can be found in the documentation (`doc/manual.mkd`).
+Use `make doc` to build a HTML documentation (requires `pandoc`).
+
+## Contact
+
+If you have found a bug, have an idea or a question, email me at
+<khaelin@gmail.com>.

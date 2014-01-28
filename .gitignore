@@ -1,0 +1,10 @@
+*.a
+src/*.o
+
+doc/*.html
+
+session.vim
+
+libbuffer.a
+
+tests/main
