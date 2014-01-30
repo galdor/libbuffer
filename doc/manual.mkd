@@ -203,3 +203,22 @@ Remove up to `n` bytes after offset `offset` in `buf`.
 
 Remove up to `n` bytes at the end of `buf`. Note that this function does not
 actually modify the content of the buffer and has a complexity of `Ο(1)`.
+
+## `bf_buffer_dup`
+~~~ {.c}
+    char *bf_buffer_dup(const struct bf_buffer *buf);
+~~~
+
+Duplicate the content of `buf` and return a pointer to the newly allocated
+data. If `buf` is empty or if memory cannot be allocated, `bf_buffer_dup`
+returns `NULL`.
+
+## `bf_buffer_dup_string`
+~~~ {.c}
+    char *bf_buffer_dup_string(const struct bf_buffer *buf);
+~~~
+
+Duplicate the content of `buf` as a null-terminated string and return a
+pointer to the newly allocated data. If `buf` is empty, an empty string is
+returned. If memory cannot be allocated, `bf_buffer_dup_string` returns
+`NULL`.

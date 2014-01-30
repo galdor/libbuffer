@@ -216,6 +216,38 @@ TEST_DEFINE(remove) {
     TEST_SUCCEED();
 }
 
+TEST_DEFINE(dup) {
+    struct bf_buffer *buf;
+    char *tmp;
+
+    buf = bf_buffer_new(0);
+
+    TEST_ASSERT(bf_buffer_dup(buf) == NULL,
+                "an empty buffer cannot be duplicated");
+
+    bf_buffer_add_string(buf, "abcde");
+    tmp = bf_buffer_dup(buf);
+    TEST_ASSERT(memcmp(tmp, "abcde", 5) == 0,
+                "duplicating a buffer yields the same data");
+    free(tmp);
+
+    tmp = bf_buffer_dup_string(buf);
+    TEST_ASSERT(memcmp(tmp, "abcde\0", 6) == 0,
+                "duplicating a buffer as a string yields the same data");
+    free(tmp);
+
+    bf_buffer_clear(buf);
+    tmp = bf_buffer_dup_string(buf);
+    TEST_ASSERT(memcmp(tmp, "\0", 1) == 0,
+                "duplicating an empty buffer as a string yields an empty "
+                "string");
+    free(tmp);
+
+    bf_buffer_delete(buf);
+
+    TEST_SUCCEED();
+}
+
 
 #define TEST_CASE(name_) {.name = #name_, .test_func = test_case_##name_}
 
@@ -227,6 +259,7 @@ static struct {
     TEST_CASE(add),
     TEST_CASE(skip),
     TEST_CASE(remove),
+    TEST_CASE(dup),
 };
 
 #undef TEST_CASE

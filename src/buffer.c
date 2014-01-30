@@ -264,6 +264,38 @@ bf_buffer_remove(struct bf_buffer *buf, size_t n) {
     return bf_buffer_remove_before(buf, buf->len, n);
 }
 
+char *
+bf_buffer_dup(const struct bf_buffer *buf) {
+    char *tmp;
+
+    if (!buf->data || buf->len == 0) {
+        bf_set_error("cannot duplicate an empty buffer");
+        return NULL;
+    }
+
+    tmp = bf_malloc(buf->len);
+    if (!tmp)
+        return NULL;
+
+    memcpy(tmp, buf->data + buf->skip, buf->len);
+    return tmp;
+}
+
+char *
+bf_buffer_dup_string(const struct bf_buffer *buf) {
+    char *str;
+
+    str = bf_malloc(buf->len + 1);
+    if (!str)
+        return NULL;
+
+    if (buf->data)
+        memcpy(str, buf->data + buf->skip, buf->len);
+    str[buf->len] = '\0';
+
+    return str;
+}
+
 static size_t
 bf_buffer_free_space(const struct bf_buffer*buf) {
     return buf->sz - buf->len - buf->skip;

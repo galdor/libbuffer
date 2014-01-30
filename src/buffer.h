@@ -56,4 +56,7 @@ size_t bf_buffer_remove_before(struct bf_buffer *buf, size_t offset, size_t n);
 size_t bf_buffer_remove_after(struct bf_buffer *buf, size_t offset, size_t n);
 size_t bf_buffer_remove(struct bf_buffer *buf, size_t n);
 
+char *bf_buffer_dup(const struct bf_buffer *buf);
+char *bf_buffer_dup_string(const struct bf_buffer *buf);
+
 #endif
