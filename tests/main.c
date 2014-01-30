@@ -73,6 +73,34 @@ TEST_DEFINE(initialization) {
     TEST_SUCCEED();
 }
 
+TEST_DEFINE(insert) {
+    struct bf_buffer *buf;
+
+    buf = bf_buffer_new(0);
+
+    bf_buffer_insert(buf, 0, "abc", 3);
+    TEST_ASSERT(bf_buffer_length(buf) == 3,
+                "the length is right after inserting data for the first time");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "abc", 3) == 0,
+                "data are correct after inserting data for the first time");
+
+    bf_buffer_insert(buf, 2, "123", 3);
+    TEST_ASSERT(bf_buffer_length(buf) == 6,
+                "the length is right after inserting data");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "ab123c", 6) == 0,
+                "data are correct after inserting data for the first time");
+
+    bf_buffer_insert(buf, 6, "de", 2);
+    TEST_ASSERT(bf_buffer_length(buf) == 8,
+                "the length is right after inserting data at the end");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "ab123cde", 8) == 0,
+                "data are correct after inserting data at the end");
+
+    bf_buffer_delete(buf);
+
+    TEST_SUCCEED();
+}
+
 TEST_DEFINE(add) {
     struct bf_buffer *buf;
 
@@ -94,10 +122,10 @@ TEST_DEFINE(add) {
     TEST_ASSERT(bf_buffer_length(buf) == 0,
                 "the length is right after clearing the buffer");
 
-    bf_buffer_add_printf(buf, "%d", 42);
-    TEST_ASSERT(bf_buffer_length(buf) == 2,
+    bf_buffer_add_printf(buf, "hello: %d", 42);
+    TEST_ASSERT(bf_buffer_length(buf) == 9,
                 "the length is right after adding formatted data");
-    TEST_ASSERT(memcmp(bf_buffer_data(buf), "42", 2) == 0,
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "hello: 42", 2) == 0,
                 "data are correct after adding formatted data");
 
     bf_buffer_delete(buf);
@@ -256,6 +284,7 @@ static struct {
     int (*test_func)();
 } test_cases[] = {
     TEST_CASE(initialization),
+    TEST_CASE(insert),
     TEST_CASE(add),
     TEST_CASE(skip),
     TEST_CASE(remove),
