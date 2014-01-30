@@ -105,6 +105,117 @@ TEST_DEFINE(add) {
     TEST_SUCCEED();
 }
 
+TEST_DEFINE(skip) {
+    struct bf_buffer *buf;
+
+    buf = bf_buffer_new(0);
+
+    bf_buffer_skip(buf, 3);
+    TEST_ASSERT(bf_buffer_length(buf) == 0,
+                "the length is correct after skipping on an empty buffer");
+
+    bf_buffer_add_string(buf, "abcde");
+    bf_buffer_skip(buf, 2);
+    TEST_ASSERT(bf_buffer_length(buf) == 3,
+                "the length is correct after skipping");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "cde", 3) == 0,
+                "the content is correct after skipping");
+
+    bf_buffer_skip(buf, 3);
+    TEST_ASSERT(bf_buffer_length(buf) == 0,
+                "the length is correct after skipping the whole content");
+
+    bf_buffer_add_string(buf, "fgh");
+    bf_buffer_skip(buf, 6);
+    TEST_ASSERT(bf_buffer_length(buf) == 0,
+                "the length is correct after skipping more bytes than there are");
+
+    bf_buffer_delete(buf);
+
+    TEST_SUCCEED();
+}
+
+TEST_DEFINE(remove) {
+    struct bf_buffer *buf;
+
+    buf = bf_buffer_new(0);
+
+    TEST_ASSERT(bf_buffer_remove(buf, 2) == 0,
+                "bf_buffer_remove() returns the right value for an empty buffer");
+    TEST_ASSERT(bf_buffer_length(buf) == 0,
+                "the length is correct after removing from an empty buffer");
+
+    bf_buffer_add_string(buf, "abcde");
+
+    TEST_ASSERT(bf_buffer_remove(buf, 2) == 2,
+                "bf_buffer_remove() returns the right value");
+    TEST_ASSERT(bf_buffer_length(buf) == 3,
+                "the length is correct after removing");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "abc", 3) == 0,
+                "the content is correct after removing");
+
+    TEST_ASSERT(bf_buffer_remove(buf, 5) == 3,
+                "bf_buffer_remove() returns the right value when n is larger "
+                "than the length of the buffer");
+    TEST_ASSERT(bf_buffer_length(buf) == 0,
+                "the length is correct after removing with n being larger "
+                "than the length of the buffer");
+
+    bf_buffer_add_string(buf, "abcde");
+
+    TEST_ASSERT(bf_buffer_remove_before(buf, 3, 2) == 2,
+                "bf_buffer_remove_before() returns the right value");
+    TEST_ASSERT(bf_buffer_length(buf) == 3,
+                "the length is correct after removing before an offset");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "ade", 3) == 0,
+                "the content is correct after removing before an offset");
+
+    TEST_ASSERT(bf_buffer_remove_before(buf, 1, 3) == 1,
+                "bf_buffer_remove_before() returns the right value when "
+                "offset - n < 0");
+    TEST_ASSERT(bf_buffer_length(buf) == 2,
+                "the length is correct after removing before an offset with "
+                "offset - n < 0");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "de", 2) == 0,
+                "the content is correct after removing before an offset with "
+                "offset - n < 0");
+
+    bf_buffer_clear(buf);
+    bf_buffer_add_string(buf, "abcde");
+    TEST_ASSERT(bf_buffer_remove_after(buf, 0, 2) == 2,
+                "bf_buffer_remove_after() returns the right value for "
+                "a zero offset");
+    TEST_ASSERT(bf_buffer_length(buf) == 3,
+                "the length is correct after removing after a zero offset");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "cde", 3) == 0,
+                "the content is correct after removing after a zero offset");
+
+    bf_buffer_clear(buf);
+    bf_buffer_add_string(buf, "abcde");
+    TEST_ASSERT(bf_buffer_remove_after(buf, 1, 2) == 2,
+                "bf_buffer_remove_after() returns the right value");
+    TEST_ASSERT(bf_buffer_length(buf) == 3,
+                "the length is correct after removing after an offset");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "ade", 3) == 0,
+                "the content is correct after removing after an offset");
+
+    bf_buffer_clear(buf);
+    bf_buffer_add_string(buf, "abcde");
+    TEST_ASSERT(bf_buffer_remove_after(buf, 4, 2) == 1,
+                "bf_buffer_remove_after() returns the right value when "
+                "offset + n >= len");
+    TEST_ASSERT(bf_buffer_length(buf) == 4,
+                "the length is correct after removing after an offset with "
+                "offset + n >= len");
+    TEST_ASSERT(memcmp(bf_buffer_data(buf), "abcd", 4) == 0,
+                "the content is correct after removing after an offset with "
+                "offset + n >= len");
+
+    bf_buffer_delete(buf);
+
+    TEST_SUCCEED();
+}
+
 
 #define TEST_CASE(name_) {.name = #name_, .test_func = test_case_##name_}
 
@@ -114,6 +225,8 @@ static struct {
 } test_cases[] = {
     TEST_CASE(initialization),
     TEST_CASE(add),
+    TEST_CASE(skip),
+    TEST_CASE(remove),
 };
 
 #undef TEST_CASE
@@ -125,7 +238,7 @@ main(int argc, char **argv) {
     int opt;
 
     opterr = 0;
-    while ((opt = getopt(argc, argv, "hn:")) != -1) {
+    while ((opt = getopt(argc, argv, "h")) != -1) {
         switch (opt) {
             case 'h':
                 usage(argv[0], 0);
@@ -175,7 +288,7 @@ main(int argc, char **argv) {
 
 static void
 usage(const char *argv0, int exit_code) {
-    printf("Usage: %s [-hn]\n"
+    printf("Usage: %s [-h]\n"
             "\n"
             "Options:\n"
             "  -h         display help\n",

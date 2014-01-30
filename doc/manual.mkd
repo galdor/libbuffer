@@ -105,7 +105,7 @@ Return the length of `buf`, i.e. the number of bytes stored inside it.
 ~~~
 
 Clear all data stored in `buf`. Note that this function does not actually
-erase any thing, and has a complexity of `Ο(1)`.
+modify the content of the buffer and has a complexity of `Ο(1)`.
 
 ## `bf_buffer_insert`
 ~~~ {.c}
@@ -173,3 +173,33 @@ final '\0' is added.
 
 If formatting or memory allocation fails, `bf_buffer_add_printf` returns -1.
 If not, it returns 0.
+
+## `bf_buffer_skip`
+~~~ {.c}
+    void bf_buffer_skip(struct bf_buffer *buf, size_t n);
+~~~
+
+Remove up to `n` bytes at the beginning of `buf`. Note that this function does
+not actually modify the content of the buffer and has a complexity of `Ο(1)`.
+
+## `bf_buffer_remove_before`
+~~~ {.c}
+    size_t bf_buffer_remove_before(struct bf_buffer *buf, size_t offset, size_t n);
+~~~
+
+Remove up to `n` bytes before offset `offset` in `buf`.
+
+## `bf_buffer_remove_after`
+~~~ {.c}
+    size_t bf_buffer_remove_after(struct bf_buffer *buf, size_t offset, size_t n);
+~~~
+
+Remove up to `n` bytes after offset `offset` in `buf`.
+
+## `bf_buffer_remove`
+~~~ {.c}
+    size_t bf_buffer_remove(struct bf_buffer *buf, size_t n);
+~~~
+
+Remove up to `n` bytes at the end of `buf`. Note that this function does not
+actually modify the content of the buffer and has a complexity of `Ο(1)`.

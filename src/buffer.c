@@ -208,6 +208,62 @@ bf_buffer_add_printf(struct bf_buffer *buf, const char *fmt, ...) {
     return ret;
 }
 
+void
+bf_buffer_skip(struct bf_buffer *buf, size_t n) {
+    if (n > buf->len)
+        n = buf->len;
+
+    buf->skip += n;
+    buf->len -= n;
+}
+
+size_t
+bf_buffer_remove_before(struct bf_buffer *buf, size_t offset, size_t n) {
+    if (offset > buf->len)
+        offset = buf->len;
+
+    if (n > offset)
+        n = offset;
+
+    if (n == 0)
+        return 0;
+
+    if (offset < buf->len) {
+        char *ptr;
+
+        ptr = buf->data + buf->skip + offset;
+        memmove(ptr - n, ptr, buf->len - offset);
+    }
+
+    buf->len -= n;
+    return n;
+}
+
+size_t
+bf_buffer_remove_after(struct bf_buffer *buf, size_t offset, size_t n) {
+    char *ptr;
+
+    if (offset > buf->len)
+        offset = buf->len;
+
+    if (offset + n > buf->len)
+        n = buf->len - offset;
+
+    if (n == 0)
+        return 0;
+
+    ptr = buf->data + buf->skip + offset;
+    memmove(ptr, ptr + n, buf->len - offset - n);
+
+    buf->len -= n;
+    return n;
+}
+
+size_t
+bf_buffer_remove(struct bf_buffer *buf, size_t n) {
+    return bf_buffer_remove_before(buf, buf->len, n);
+}
+
 static size_t
 bf_buffer_free_space(const struct bf_buffer*buf) {
     return buf->sz - buf->len - buf->skip;

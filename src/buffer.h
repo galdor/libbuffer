@@ -51,4 +51,9 @@ int bf_buffer_add_vprintf(struct bf_buffer *buf, const char *fmt, va_list ap);
 int bf_buffer_add_printf(struct bf_buffer *buf, const char *fmt, ...)
     __attribute__((format(printf, 2, 3)));
 
+void bf_buffer_skip(struct bf_buffer *buf, size_t n);
+size_t bf_buffer_remove_before(struct bf_buffer *buf, size_t offset, size_t n);
+size_t bf_buffer_remove_after(struct bf_buffer *buf, size_t offset, size_t n);
+size_t bf_buffer_remove(struct bf_buffer *buf, size_t n);
+
 #endif
