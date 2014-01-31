@@ -95,6 +95,14 @@ bf_buffer_clear(struct bf_buffer*buf) {
     buf->len = 0;
 }
 
+void
+bf_buffer_truncate(struct bf_buffer *buf, size_t sz) {
+    if (sz > buf->len)
+        sz = buf->len;
+
+    buf->len = sz;
+}
+
 char *
 bf_buffer_reserve(struct bf_buffer *buf, size_t sz) {
     if (bf_buffer_ensure_free_space(buf, sz) == -1)

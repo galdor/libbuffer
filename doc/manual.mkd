@@ -107,6 +107,14 @@ Return the length of `buf`, i.e. the number of bytes stored inside it.
 Clear all data stored in `buf`. Note that this function does not actually
 modify the content of the buffer and has a complexity of `Ο(1)`.
 
+## `bf_buffer_truncate`
+~~~ {.c}
+    void bf_buffer_truncate(struct bf_buffer *buf, size_t sz);
+~~~
+
+Truncate the content of `buf` to `sz` bytes. Note that this function does not
+actually modify the content of the buffer and has a complexity of `Ο(1)`.
+
 ## `bf_buffer_reserve`
 ~~~ {.c}
     char *bf_buffer_reserve(struct bf_buffer *buf, size_t sz) {
