@@ -107,6 +107,16 @@ Return the length of `buf`, i.e. the number of bytes stored inside it.
 Clear all data stored in `buf`. Note that this function does not actually
 modify the content of the buffer and has a complexity of `Ο(1)`.
 
+## `bf_buffer_reserve`
+~~~ {.c}
+    char *bf_buffer_reserve(struct bf_buffer *buf, size_t sz) {
+~~~
+
+Make sure that `buf` has at least `sz` bytes of free contiguous memory at its
+end, then return a pointer to the first byte after the end of `buf`.
+
+If memory allocation fails, `bf_buffer_reserve` returns `NULL`.
+
 ## `bf_buffer_insert`
 ~~~ {.c}
     int bf_buffer_insert(struct bf_buffer *buf, size_t offset, const char *data,
@@ -222,3 +232,20 @@ Duplicate the content of `buf` as a null-terminated string and return a
 pointer to the newly allocated data. If `buf` is empty, an empty string is
 returned. If memory cannot be allocated, `bf_buffer_dup_string` returns
 `NULL`.
+
+## `bf_buffer_read`
+~~~ {.c}
+    ssize_t bf_buffer_read(struct bf_buffer *buf, int fd, size_t n);
+~~~
+
+Use the `read` POSIX function to read up to `n` bytes from file descriptor
+`fd` at the end of `buf`. Returns the value returned by `read`.
+
+## `bf_buffer_write`
+~~~ {.c}
+    ssize_t bf_buffer_write(struct bf_buffer *buf, int fd);
+~~~
+
+Use the `write` POSIX function to write the content of `buf` to file
+descriptor `fd`. Returns the value returned by `write`. If the write operation
+succeeds, written data are skipped in `buf`.

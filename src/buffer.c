@@ -18,6 +18,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <unistd.h>
+
 #include "utils.h"
 #include "buffer.h"
 
@@ -91,6 +93,14 @@ void
 bf_buffer_clear(struct bf_buffer*buf) {
     buf->skip = 0;
     buf->len = 0;
+}
+
+char *
+bf_buffer_reserve(struct bf_buffer *buf, size_t sz) {
+    if (bf_buffer_ensure_free_space(buf, sz) == -1)
+        return NULL;
+
+    return buf->data + buf->skip + buf->len;
 }
 
 int
@@ -294,6 +304,33 @@ bf_buffer_dup_string(const struct bf_buffer *buf) {
     str[buf->len] = '\0';
 
     return str;
+}
+
+ssize_t
+bf_buffer_read(struct bf_buffer *buf, int fd, size_t n) {
+    ssize_t ret;
+    char *ptr;
+
+    ptr = bf_buffer_reserve(buf, n);
+    if (!ptr)
+        return -1;
+
+    ret = read(fd, ptr, n);
+    if (ret > 0)
+        buf->len += (size_t)ret;
+
+    return ret;
+}
+
+ssize_t
+bf_buffer_write(struct bf_buffer *buf, int fd) {
+    ssize_t ret;
+
+    ret = write(fd, buf->data + buf->skip, buf->len);
+    if (ret > 0)
+        buf->len -= (size_t)ret;
+
+    return ret;
 }
 
 static size_t

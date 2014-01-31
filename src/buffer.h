@@ -42,6 +42,7 @@ char *bf_buffer_data(const struct bf_buffer *buf);
 size_t bf_buffer_length(const struct bf_buffer *buf);
 void bf_buffer_clear(struct bf_buffer *buf);
 
+char *bf_buffer_reserve(struct bf_buffer *buf, size_t sz);
 int bf_buffer_insert(struct bf_buffer *buf, size_t offset, const char *data,
                      size_t sz);
 int bf_buffer_add(struct bf_buffer *buf, const char *data, size_t sz);
@@ -58,5 +59,8 @@ size_t bf_buffer_remove(struct bf_buffer *buf, size_t n);
 
 char *bf_buffer_dup(const struct bf_buffer *buf);
 char *bf_buffer_dup_string(const struct bf_buffer *buf);
+
+ssize_t bf_buffer_read(struct bf_buffer *buf, int fd, size_t n);
+ssize_t bf_buffer_write(struct bf_buffer *buf, int fd);
 
 #endif
