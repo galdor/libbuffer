@@ -111,6 +111,9 @@ bf_buffer_truncate(struct bf_buffer *buf, size_t sz) {
         sz = buf->len;
 
     buf->len = sz;
+
+    if (buf->len == 0)
+        buf->skip = 0;
 }
 
 char *
@@ -242,12 +245,10 @@ bf_buffer_skip(struct bf_buffer *buf, size_t n) {
         n = buf->len;
 
     buf->len -= n;
+    buf->skip += n;
 
-    if (buf->len == 0) {
+    if (buf->len == 0)
         buf->skip = 0;
-    } else {
-        buf->skip += n;
-    }
 }
 
 size_t
@@ -269,6 +270,10 @@ bf_buffer_remove_before(struct bf_buffer *buf, size_t offset, size_t n) {
     }
 
     buf->len -= n;
+
+    if (buf->len == 0)
+        buf->skip = 0;
+
     return n;
 }
 
@@ -289,6 +294,10 @@ bf_buffer_remove_after(struct bf_buffer *buf, size_t offset, size_t n) {
     memmove(ptr, ptr + n, buf->len - offset - n);
 
     buf->len -= n;
+
+    if (buf->len == 0)
+        buf->skip = 0;
+
     return n;
 }
 
@@ -350,8 +359,12 @@ bf_buffer_write(struct bf_buffer *buf, int fd) {
     ssize_t ret;
 
     ret = write(fd, buf->data + buf->skip, buf->len);
-    if (ret > 0)
+    if (ret > 0) {
         buf->len -= (size_t)ret;
+
+        if (buf->len == 0)
+            buf->skip = 0;
+    }
 
     return ret;
 }

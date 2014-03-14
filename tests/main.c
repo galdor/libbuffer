@@ -276,14 +276,13 @@ TEST_DEFINE(dup) {
     TEST_SUCCEED();
 }
 
-TEST_DEFINE(skip_all) {
+TEST_DEFINE(clear_skip_for_empty_buffers) {
     struct bf_buffer *buf;
 
     buf = bf_buffer_new(8);
 
     bf_buffer_add_string(buf, "hello");
     bf_buffer_skip(buf, 5);
-
     TEST_ASSERT(bf_buffer_free_space(buf) == 8,
                 "skipping the whole content of a buffer should make "
                 " skipped space available");
@@ -291,9 +290,22 @@ TEST_DEFINE(skip_all) {
     bf_buffer_add_string(buf, "hello");
     bf_buffer_skip(buf, 3);
     bf_buffer_skip(buf, 2);
-
     TEST_ASSERT(bf_buffer_free_space(buf) == 8,
                 "skipping the whole content of a buffer should make "
+                " skipped space available");
+
+    bf_buffer_add_string(buf, "hello");
+    bf_buffer_skip(buf, 2);
+    bf_buffer_remove_before(buf, 3, 3);
+    TEST_ASSERT(bf_buffer_free_space(buf) == 8,
+                "removing all content from before the end should make "
+                " skipped space available");
+
+    bf_buffer_add_string(buf, "hello");
+    bf_buffer_skip(buf, 2);
+    bf_buffer_remove_after(buf, 0, 3);
+    TEST_ASSERT(bf_buffer_free_space(buf) == 8,
+                "removing all content from after the beginning should make "
                 " skipped space available");
 
     TEST_SUCCEED();
@@ -309,10 +321,9 @@ static struct {
     TEST_CASE(initialization),
     TEST_CASE(insert),
     TEST_CASE(add),
-    TEST_CASE(skip_all),
     TEST_CASE(remove),
     TEST_CASE(dup),
-    TEST_CASE(skip_all),
+    TEST_CASE(clear_skip_for_empty_buffers),
 };
 
 #undef TEST_CASE
