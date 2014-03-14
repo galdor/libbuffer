@@ -40,6 +40,8 @@ void bf_buffer_delete(struct bf_buffer *buf);
 
 char *bf_buffer_data(const struct bf_buffer *buf);
 size_t bf_buffer_length(const struct bf_buffer *buf);
+size_t bf_buffer_size(const struct bf_buffer *buf);
+size_t bf_buffer_free_space(const struct bf_buffer *buf);
 
 void bf_buffer_clear(struct bf_buffer *buf);
 void bf_buffer_truncate(struct bf_buffer *buf, size_t sz);

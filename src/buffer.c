@@ -23,7 +23,6 @@
 #include "utils.h"
 #include "buffer.h"
 
-static size_t bf_buffer_free_space(const struct bf_buffer *);
 static void bf_buffer_repack(struct bf_buffer *);
 static int bf_buffer_resize(struct bf_buffer *, size_t);
 static int bf_buffer_grow(struct bf_buffer *, size_t);
@@ -80,17 +79,27 @@ bf_buffer_delete(struct bf_buffer *buf) {
 }
 
 char *
-bf_buffer_data(const struct bf_buffer*buf) {
+bf_buffer_data(const struct bf_buffer *buf) {
     return buf->data + buf->skip;
 }
 
 size_t
-bf_buffer_length(const struct bf_buffer*buf) {
+bf_buffer_length(const struct bf_buffer *buf) {
     return buf->len;
 }
 
+size_t
+bf_buffer_size(const struct bf_buffer *buf) {
+    return buf->sz;
+}
+
+size_t
+bf_buffer_free_space(const struct bf_buffer *buf) {
+    return buf->sz - buf->len - buf->skip;
+}
+
 void
-bf_buffer_clear(struct bf_buffer*buf) {
+bf_buffer_clear(struct bf_buffer *buf) {
     buf->skip = 0;
     buf->len = 0;
 }
@@ -231,8 +240,13 @@ bf_buffer_skip(struct bf_buffer *buf, size_t n) {
     if (n > buf->len)
         n = buf->len;
 
-    buf->skip += n;
     buf->len -= n;
+
+    if (buf->len == 0) {
+        buf->skip = 0;
+    } else {
+        buf->skip += n;
+    }
 }
 
 size_t
@@ -339,11 +353,6 @@ bf_buffer_write(struct bf_buffer *buf, int fd) {
         buf->len -= (size_t)ret;
 
     return ret;
-}
-
-static size_t
-bf_buffer_free_space(const struct bf_buffer*buf) {
-    return buf->sz - buf->len - buf->skip;
 }
 
 static void

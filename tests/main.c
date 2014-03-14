@@ -276,6 +276,29 @@ TEST_DEFINE(dup) {
     TEST_SUCCEED();
 }
 
+TEST_DEFINE(skip_all) {
+    struct bf_buffer *buf;
+
+    buf = bf_buffer_new(8);
+
+    bf_buffer_add_string(buf, "hello");
+    bf_buffer_skip(buf, 5);
+
+    TEST_ASSERT(bf_buffer_free_space(buf) == 8,
+                "skipping the whole content of a buffer should make "
+                " skipped space available");
+
+    bf_buffer_add_string(buf, "hello");
+    bf_buffer_skip(buf, 3);
+    bf_buffer_skip(buf, 2);
+
+    TEST_ASSERT(bf_buffer_free_space(buf) == 8,
+                "skipping the whole content of a buffer should make "
+                " skipped space available");
+
+    TEST_SUCCEED();
+}
+
 
 #define TEST_CASE(name_) {.name = #name_, .test_func = test_case_##name_}
 
@@ -286,9 +309,10 @@ static struct {
     TEST_CASE(initialization),
     TEST_CASE(insert),
     TEST_CASE(add),
-    TEST_CASE(skip),
+    TEST_CASE(skip_all),
     TEST_CASE(remove),
     TEST_CASE(dup),
+    TEST_CASE(skip_all),
 };
 
 #undef TEST_CASE

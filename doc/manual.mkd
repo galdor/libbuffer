@@ -22,7 +22,6 @@ by `bf_get_error` is local to each thread.
 The name of all symbols exported by the library is prefixed by `bf_`.
 
 ## `bf_get_error`
-
 ~~~ {.c}
     const char *bf_get_error(void);
 ~~~
@@ -34,7 +33,6 @@ can be modified by any function of the library.
 When a function of the library fails, an error string is set.
 
 ## `bf_memory_allocator`
-
 ~~~ {.c}
     struct bf_memory_allocator {
         void *(*malloc)(size_t sz);
@@ -98,6 +96,21 @@ Return a pointer to the data stored in `buf`. If `buf` is not initialized,
 ~~~
 
 Return the length of `buf`, i.e. the number of bytes stored inside it.
+
+## `bf_buffer_free_space`
+~~~ {.c}
+    size_t bf_buffer_free_space(const struct bf_buffer *buf);
+~~~
+
+Return the size of the free space at the end of `buf`.
+
+## `bf_buffer_size`
+~~~ {.c}
+    size_t bf_buffer_size(const struct bf_buffer *buf);
+~~~
+
+Return the size of `buf`, i.e. the number of bytes allocated for its content.
+The size of the buffer is greater or equal to its length.
 
 ## `bf_buffer_clear`
 ~~~ {.c}
