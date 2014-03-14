@@ -284,7 +284,7 @@ bf_buffer_remove_after(struct bf_buffer *buf, size_t offset, size_t n) {
     if (offset > buf->len)
         offset = buf->len;
 
-    if (offset + n > buf->len)
+    if (n > buf->len - offset)
         n = buf->len - offset;
 
     if (n == 0)
