@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -210,7 +211,7 @@ bf_buffer_add_vprintf(struct bf_buffer *buf, const char *fmt, va_list ap) {
         va_end(local_ap);
 
         if (ret == -1) {
-            bf_set_error("cannot format string: %m");
+            bf_set_error("cannot format string: %s", strerror(errno));
             return -1;
         }
 

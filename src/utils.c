@@ -14,6 +14,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <errno.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -82,7 +83,7 @@ bf_malloc(size_t sz) {
 
     ptr = bf_allocator.malloc(sz);
     if (!ptr) {
-        bf_set_error("cannot allocate %zu bytes: %m", sz);
+        bf_set_error("cannot allocate %zu bytes: %s", sz, strerror(errno));
         return NULL;
     }
 
@@ -100,7 +101,8 @@ bf_calloc(size_t nb, size_t sz) {
 
     ptr = bf_allocator.calloc(nb, sz);
     if (!ptr) {
-        bf_set_error("cannot allocate %zux%zu bytes: %m", nb, sz);
+        bf_set_error("cannot allocate %zux%zu bytes: %s",
+                     nb, sz, strerror(errno));
         return NULL;
     }
 
@@ -113,7 +115,7 @@ bf_realloc(void *ptr, size_t sz) {
 
     nptr = bf_allocator.realloc(ptr, sz);
     if (!nptr) {
-        bf_set_error("cannot reallocate %zu bytes: %m", sz);
+        bf_set_error("cannot reallocate %zu bytes: %s", sz, strerror(errno));
         return NULL;
     }
 
