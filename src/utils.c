@@ -58,13 +58,10 @@ bf_set_error(const char *fmt, ...) {
     ret = vsnprintf(buf, BF_ERROR_BUFSZ, fmt, ap);
     va_end(ap);
 
-    if ((size_t)ret >= BF_ERROR_BUFSZ) {
-        memcpy(bf_error_buf, buf, BF_ERROR_BUFSZ);
-        bf_error_buf[BF_ERROR_BUFSZ - 1] = '\0';
-        return;
-    }
+    if ((size_t)ret >= BF_ERROR_BUFSZ)
+        ret = BF_ERROR_BUFSZ - 1;
 
-    strncpy(bf_error_buf, buf, (size_t)ret + 1);
+    memcpy(bf_error_buf, buf, (size_t)ret);
     bf_error_buf[ret] = '\0';
 }
 
