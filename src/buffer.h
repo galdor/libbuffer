@@ -29,11 +29,12 @@ struct bf_memory_allocator {
 
 extern struct bf_memory_allocator *bf_default_memory_allocator;
 
+const char *bf_version(void);
+const char *bf_build_id(void);
 
 const char *bf_get_error(void);
 
 void bf_set_memory_allocator(const struct bf_memory_allocator *);
-
 
 struct bf_buffer *bf_buffer_new(size_t);
 void bf_buffer_delete(struct bf_buffer *);
