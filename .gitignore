@@ -1,6 +1,9 @@
 *.a
 src/*.o
 
+.tags
+session.vim
+
 doc/*.html
 
 session.vim
