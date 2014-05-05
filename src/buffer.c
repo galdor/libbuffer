@@ -21,7 +21,7 @@
 
 #include <unistd.h>
 
-#include "utils.h"
+#include "internal.h"
 #include "buffer.h"
 
 static void bf_buffer_repack(struct bf_buffer *);

@@ -14,15 +14,36 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#ifndef LIBBUFFER_UTILS_H
-#define LIBBUFFER_UTILS_H
+#include <stdarg.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
-void bf_set_error(const char *fmt, ...)
-    __attribute__((format(printf, 1, 2)));
+#include "internal.h"
+#include "buffer.h"
 
-void *bf_malloc(size_t sz);
-void bf_free(void *ptr);
-void *bf_calloc(size_t nb, size_t sz);
-void *bf_realloc(void *ptr, size_t sz);
+#define BF_ERROR_BUFSZ 1024U
 
-#endif
+static __thread char bf_error_buf[BF_ERROR_BUFSZ];
+
+const char *
+bf_get_error(void) {
+    return bf_error_buf;
+}
+
+void
+bf_set_error(const char *fmt, ...) {
+    char buf[BF_ERROR_BUFSZ];
+    va_list ap;
+    int ret;
+
+    va_start(ap, fmt);
+    ret = vsnprintf(buf, BF_ERROR_BUFSZ, fmt, ap);
+    va_end(ap);
+
+    if ((size_t)ret >= BF_ERROR_BUFSZ)
+        ret = BF_ERROR_BUFSZ - 1;
+
+    memcpy(bf_error_buf, buf, (size_t)ret);
+    bf_error_buf[ret] = '\0';
+}

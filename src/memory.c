@@ -15,17 +15,11 @@
  */
 
 #include <errno.h>
-#include <stdarg.h>
 #include <stdlib.h>
-#include <stdio.h>
 #include <string.h>
 
-#include "utils.h"
+#include "internal.h"
 #include "buffer.h"
-
-#define BF_ERROR_BUFSZ 1024U
-
-static __thread char bf_error_buf[BF_ERROR_BUFSZ];
 
 #define BF_DEFAULT_ALLOCATOR \
     {                        \
@@ -42,28 +36,6 @@ static const struct bf_memory_allocator bf_default_allocator =
 static struct bf_memory_allocator bf_allocator = BF_DEFAULT_ALLOCATOR;
 
 struct bf_memory_allocator *bf_default_memory_allocator;
-
-const char *
-bf_get_error(void) {
-    return bf_error_buf;
-}
-
-void
-bf_set_error(const char *fmt, ...) {
-    char buf[BF_ERROR_BUFSZ];
-    va_list ap;
-    int ret;
-
-    va_start(ap, fmt);
-    ret = vsnprintf(buf, BF_ERROR_BUFSZ, fmt, ap);
-    va_end(ap);
-
-    if ((size_t)ret >= BF_ERROR_BUFSZ)
-        ret = BF_ERROR_BUFSZ - 1;
-
-    memcpy(bf_error_buf, buf, (size_t)ret);
-    bf_error_buf[ret] = '\0';
-}
 
 void
 bf_set_memory_allocator(const struct bf_memory_allocator *allocator) {
