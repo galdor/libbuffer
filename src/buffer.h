@@ -39,7 +39,7 @@ void bf_set_memory_allocator(const struct bf_memory_allocator *);
 struct bf_buffer *bf_buffer_new(size_t);
 void bf_buffer_delete(struct bf_buffer *);
 
-char *bf_buffer_data(const struct bf_buffer *);
+void *bf_buffer_data(const struct bf_buffer *);
 size_t bf_buffer_length(const struct bf_buffer *);
 size_t bf_buffer_size(const struct bf_buffer *);
 size_t bf_buffer_free_space(const struct bf_buffer *);
@@ -47,9 +47,9 @@ size_t bf_buffer_free_space(const struct bf_buffer *);
 void bf_buffer_clear(struct bf_buffer *);
 void bf_buffer_truncate(struct bf_buffer *, size_t);
 
-char *bf_buffer_reserve(struct bf_buffer *, size_t);
-int bf_buffer_insert(struct bf_buffer *, size_t, const char *, size_t);
-int bf_buffer_add(struct bf_buffer *, const char *, size_t);
+void *bf_buffer_reserve(struct bf_buffer *, size_t);
+int bf_buffer_insert(struct bf_buffer *, size_t, const void *, size_t);
+int bf_buffer_add(struct bf_buffer *, const void *, size_t);
 int bf_buffer_add_buffer(struct bf_buffer *, const struct bf_buffer *);
 int bf_buffer_add_string(struct bf_buffer *, const char *);
 int bf_buffer_add_vprintf(struct bf_buffer *, const char *, va_list);
@@ -61,7 +61,7 @@ size_t bf_buffer_remove_before(struct bf_buffer *, size_t, size_t);
 size_t bf_buffer_remove_after(struct bf_buffer *, size_t, size_t);
 size_t bf_buffer_remove(struct bf_buffer *, size_t);
 
-char *bf_buffer_dup(const struct bf_buffer *);
+void *bf_buffer_dup(const struct bf_buffer *);
 char *bf_buffer_dup_string(const struct bf_buffer *);
 
 ssize_t bf_buffer_read(struct bf_buffer *, int, size_t);

@@ -79,7 +79,7 @@ bf_buffer_delete(struct bf_buffer *buf) {
     bf_free(buf);
 }
 
-char *
+void *
 bf_buffer_data(const struct bf_buffer *buf) {
     return buf->data + buf->skip;
 }
@@ -116,7 +116,7 @@ bf_buffer_truncate(struct bf_buffer *buf, size_t sz) {
         buf->skip = 0;
 }
 
-char *
+void *
 bf_buffer_reserve(struct bf_buffer *buf, size_t sz) {
     if (bf_buffer_ensure_free_space(buf, sz) == -1)
         return NULL;
@@ -125,7 +125,7 @@ bf_buffer_reserve(struct bf_buffer *buf, size_t sz) {
 }
 
 int
-bf_buffer_insert(struct bf_buffer *buf, size_t offset, const char *data,
+bf_buffer_insert(struct bf_buffer *buf, size_t offset, const void *data,
                  size_t sz) {
     char *ndata;
     size_t nsz;
@@ -170,7 +170,7 @@ bf_buffer_insert(struct bf_buffer *buf, size_t offset, const char *data,
 }
 
 int
-bf_buffer_add(struct bf_buffer *buf, const char *data, size_t sz) {
+bf_buffer_add(struct bf_buffer *buf, const void *data, size_t sz) {
     return bf_buffer_insert(buf, buf->len, data, sz);
 }
 
@@ -306,7 +306,7 @@ bf_buffer_remove(struct bf_buffer *buf, size_t n) {
     return bf_buffer_remove_before(buf, buf->len, n);
 }
 
-char *
+void *
 bf_buffer_dup(const struct bf_buffer *buf) {
     char *tmp;
 
