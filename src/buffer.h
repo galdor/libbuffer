@@ -48,6 +48,7 @@ void bf_buffer_clear(struct bf_buffer *);
 void bf_buffer_truncate(struct bf_buffer *, size_t);
 
 void *bf_buffer_reserve(struct bf_buffer *, size_t);
+int bf_buffer_increase_length(struct bf_buffer *, size_t);
 int bf_buffer_insert(struct bf_buffer *, size_t, const void *, size_t);
 int bf_buffer_add(struct bf_buffer *, const void *, size_t);
 int bf_buffer_add_buffer(struct bf_buffer *, const struct bf_buffer *);

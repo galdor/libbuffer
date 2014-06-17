@@ -125,6 +125,17 @@ bf_buffer_reserve(struct bf_buffer *buf, size_t sz) {
 }
 
 int
+bf_buffer_increase_length(struct bf_buffer *buf, size_t n) {
+    if (n > buf->sz - buf->len - buf->skip) {
+        bf_set_error("length increment too large");
+        return -1;
+    }
+
+    buf->length += n;
+    return 0;
+}
+
+int
 bf_buffer_insert(struct bf_buffer *buf, size_t offset, const void *data,
                  size_t sz) {
     char *ndata;

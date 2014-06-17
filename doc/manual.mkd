@@ -128,6 +128,22 @@ modify the content of the buffer and has a complexity of `Ο(1)`.
 Truncate the content of `buf` to `sz` bytes. Note that this function does not
 actually modify the content of the buffer and has a complexity of `Ο(1)`.
 
+## `bf_buffer_increase_length`
+~~~ {.c}
+    int bf_buffer_increase_length(struct bf_buffer *buf, size_t n);
+~~~
+
+Increase the length of `buf` by `n` bytes. Note that this function does not
+modify the content of the buffer, only its length.
+
+`bf_buffer_increase_length` is to be used with `bf_buffer_reserve` to write
+directly to the buffer. `bf_buffer_reserve` reserves some space and returns a
+pointer to the end of the buffer. One can then use this pointer to write to
+the buffer, and call `bf_buffer_increase_length` to update its length.
+
+If `n` is too large, `bf_buffer_increase_length` returns -1. If not, it
+returns 0.
+
 ## `bf_buffer_reserve`
 ~~~ {.c}
     char *bf_buffer_reserve(struct bf_buffer *buf, size_t sz) {
