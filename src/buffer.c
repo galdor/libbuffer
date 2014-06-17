@@ -131,7 +131,7 @@ bf_buffer_increase_length(struct bf_buffer *buf, size_t n) {
         return -1;
     }
 
-    buf->length += n;
+    buf->len += n;
     return 0;
 }
 
