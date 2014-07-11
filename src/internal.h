@@ -20,9 +20,4 @@
 void bf_set_error(const char *fmt, ...)
     __attribute__((format(printf, 1, 2)));
 
-void *bf_malloc(size_t sz);
-void bf_free(void *ptr);
-void *bf_calloc(size_t nb, size_t sz);
-void *bf_realloc(void *ptr, size_t sz);
-
 #endif

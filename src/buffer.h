@@ -36,6 +36,11 @@ const char *bf_get_error(void);
 
 void bf_set_memory_allocator(const struct bf_memory_allocator *);
 
+void *bf_malloc(size_t);
+void bf_free(void *);
+void *bf_calloc(size_t, size_t);
+void *bf_realloc(void *, size_t);
+
 struct bf_buffer *bf_buffer_new(size_t);
 void bf_buffer_delete(struct bf_buffer *);
 
