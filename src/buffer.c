@@ -141,6 +141,9 @@ bf_buffer_insert(struct bf_buffer *buf, size_t offset, const void *data,
     char *ndata;
     size_t nsz;
 
+    if (sz == 0)
+        return 0;
+
     if (offset > buf->len) {
         bf_set_error("invalid offset");
         return -1;
