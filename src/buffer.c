@@ -331,6 +331,26 @@ bf_buffer_remove(struct bf_buffer *buf, size_t n) {
 }
 
 void *
+bf_buffer_extract(struct bf_buffer *buf, size_t *plen) {
+    void *data;
+
+    bf_buffer_repack(buf);
+
+    data = bf_realloc(buf->data, buf->len);
+    if (!data)
+        return NULL;
+
+    if (plen)
+        *plen = buf->len;
+
+    buf->data = NULL;
+    buf->sz = 0;
+    buf->len = 0;
+
+    return data;
+}
+
+void *
 bf_buffer_dup(const struct bf_buffer *buf) {
     char *tmp;
 

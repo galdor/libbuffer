@@ -258,6 +258,23 @@ Remove up to `n` bytes after offset `offset` in `buf`.
 Remove up to `n` bytes at the end of `buf`. Note that this function does not
 actually modify the content of the buffer and has a complexity of `Ο(1)`.
 
+## `bf_buffer_extract`
+~~~ {.c}
+    void *bf_buffer_extract(struct bf_buffer *buf, size_t *plen);
+~~~
+
+Reset `buf` without releasing the memory associated with the content and
+return a pointer on the content, effectively transferring ownership of the
+content to the caller.
+
+If `plen` is not `NULL`, store the length of the content in the memory
+referenced by `plen`.
+
+`bf_buffer_extract` uses `realloc` to truncate the memory used to store the
+content of the buffer to its real length. If the call to `realloc` fails,
+`bf_buffer_extract` returns NULL, and the content of the buffer is not
+modified.
+
 ## `bf_buffer_dup`
 ~~~ {.c}
     char *bf_buffer_dup(const struct bf_buffer *buf);
