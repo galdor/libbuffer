@@ -112,6 +112,13 @@ Return the size of the free space at the end of `buf`.
 Return the size of `buf`, i.e. the number of bytes allocated for its content.
 The size of the buffer is greater or equal to its length.
 
+## `bf_buffer_reset`
+~~~ {.c}
+    void bf_buffer_reset(struct bf_buffer *buf);
+~~~
+
+Clear all data stored in `buf` and release the associated memory.
+
 ## `bf_buffer_clear`
 ~~~ {.c}
     void bf_buffer_clear(struct bf_buffer *buf);

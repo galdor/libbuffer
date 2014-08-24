@@ -100,6 +100,16 @@ bf_buffer_free_space(const struct bf_buffer *buf) {
 }
 
 void
+bf_buffer_reset(struct bf_buffer *buf) {
+    bf_free(buf->data);
+    buf->data = NULL;
+
+    buf->sz = 0;
+    buf->skip = 0;
+    buf->len = 0;
+}
+
+void
 bf_buffer_clear(struct bf_buffer *buf) {
     buf->skip = 0;
     buf->len = 0;

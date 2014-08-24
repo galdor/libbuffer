@@ -49,6 +49,7 @@ size_t bf_buffer_length(const struct bf_buffer *);
 size_t bf_buffer_size(const struct bf_buffer *);
 size_t bf_buffer_free_space(const struct bf_buffer *);
 
+void bf_buffer_reset(struct bf_buffer *);
 void bf_buffer_clear(struct bf_buffer *);
 void bf_buffer_truncate(struct bf_buffer *, size_t);
 
