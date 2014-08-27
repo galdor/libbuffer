@@ -334,6 +334,11 @@ void *
 bf_buffer_extract(struct bf_buffer *buf, size_t *plen) {
     void *data;
 
+    if (!buf->data || buf->len == 0) {
+        bf_set_error("cannot extract content from an empty buffer");
+        return NULL;
+    }
+
     bf_buffer_repack(buf);
 
     data = bf_realloc(buf->data, buf->len);
