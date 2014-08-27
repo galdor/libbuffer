@@ -69,6 +69,7 @@ size_t bf_buffer_remove_after(struct bf_buffer *, size_t, size_t);
 size_t bf_buffer_remove(struct bf_buffer *, size_t);
 
 void *bf_buffer_extract(struct bf_buffer *, size_t *);
+char *bf_buffer_extract_string(struct bf_buffer *, size_t *);
 void *bf_buffer_dup(const struct bf_buffer *);
 char *bf_buffer_dup_string(const struct bf_buffer *);
 

@@ -355,6 +355,12 @@ bf_buffer_extract(struct bf_buffer *buf, size_t *plen) {
     return data;
 }
 
+char *
+bf_buffer_extract_string(struct bf_buffer *buf, size_t *plen) {
+    bf_buffer_add(buf, "\0", 1);
+    return bf_buffer_extract(buf, plen);
+}
+
 void *
 bf_buffer_dup(const struct bf_buffer *buf) {
     char *tmp;

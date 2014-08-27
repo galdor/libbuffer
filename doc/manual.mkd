@@ -277,6 +277,14 @@ content of the buffer to its real length. If the call to `realloc` fails,
 `bf_buffer_extract` returns NULL, and the content of the buffer is not
 modified.
 
+## `bf_buffer_extract_string`
+~~~ {.c}
+    char *bf_buffer_extract_string(struct bf_buffer *buf, size_t *plen);
+~~~
+
+`bf_buffer_extract_string` works the same way that `bf_buffer_extract`, but
+ensure that the returned data end with a null byte.
+
 ## `bf_buffer_dup`
 ~~~ {.c}
     char *bf_buffer_dup(const struct bf_buffer *buf);
